@@ -2,7 +2,6 @@ import React from 'react';
 import { translate } from 'react-translate';
 import { connect } from 'react-redux';
 import { actions } from './reducers';
-import sha1 from 'sha1';
 import ErrorCode from './ErrorCode';
 import { fetchBackend } from './rest';
 
@@ -25,7 +24,7 @@ export default class Login extends React.Component {
 
     clickLogin = async () => {
         const username = this._getUsername();
-        const passwordSha1 = sha1(this._getPassword());
+        const password = this._getPassword();
 
         try {
             const result = await fetchBackend('/api/user/login', {
@@ -35,7 +34,7 @@ export default class Login extends React.Component {
                 },
                 body: JSON.stringify({
                     username,
-                    passwordSha1
+                    password
                 })
             });
 

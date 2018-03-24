@@ -1,5 +1,6 @@
 import fs from 'fs';
 import https from 'https';
+import crypto from 'crypto';
 
 import express from 'express';
 import proxy from 'http-proxy-middleware';
@@ -8,11 +9,13 @@ import moment from 'moment';
 import uuid from 'uuid';
 import dotenv from 'dotenv';
 
-import whistleblowerMiddleware from './whistleblower-express-middleware';
+import logawesomeMiddleware from './logawesome-express-middleware';
 import MongoDB, { mongoToString, mongoToObjectId, mongoToNumber } from './MongoDB';
 import { logSystem } from './log-system';
 import { success, fail } from './rest';
 import authHandler from './auth-handler';
+
+import * as security from './security';
 
 
 
@@ -81,7 +84,7 @@ const sslOptions = {
 
     // middlewares
 
-    app.use(whistleblowerMiddleware(logSystem));
+    app.use(logawesomeMiddleware(logSystem));
     app.use(express.json());
     
 
@@ -132,13 +135,15 @@ const sslOptions = {
             return;
         }
 
-        // password does not match
-        const passwordSha1 = req.body && req.body.passwordSha1;
-        if (user.passwordSha1 !== passwordSha1) {
+        const matches = await security.compareHash(
+            req.body && req.body.password,
+            Buffer.from(user.hash, 'base64') // hacky
+        );
+
+        if (!matches) {
             resp.json(fail.login());
             return;
         }
-
 
         const authToken = uuid.v4();
         await db.insertSession(user._id, authToken);
@@ -290,6 +295,32 @@ const sslOptions = {
 
         resp.json(success());
 
+    }));
+
+    app.post('/api/user', authenticated(async ({req, resp, user}) => {
+
+        // only admin user is admin :), this is a hack
+        if (user.username !== 'admin') {
+            resp.json(fail.accessViolation());
+            return;
+        }
+
+        if (!req.body || !req.body.username || !req.body.password) {
+            resp.json(fail.badRequest());
+            return;
+        }
+
+        const password = req.body && req.body.password;
+        const username = req.body && req.body.username;
+
+        const hashBuf = await security.createHashBuf(password);
+
+        await db.insertUser({
+            username,
+            hashBuf
+        });
+
+        resp.json(success());
     }));
 
 

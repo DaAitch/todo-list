@@ -15,4 +15,5 @@ export const fail = {
     login: message => _fail('LOGIN_FAILED', message),
     accessViolation: message => _fail('ACCESS_VIOLATION', message),
     db: message => _fail('DB_OPERATION_FAILED', message),
+    badRequest: message => _fail('BAD_REQUEST', message),
 };

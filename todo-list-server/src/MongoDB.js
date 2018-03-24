@@ -37,47 +37,19 @@ export default class MongoDB {
     }
 
     async connect(url, db) {
-        this._mongoClient = new mongodb.MongoClient(url);
+        return await new Promise((resolve, reject) => {
+            mongodb.MongoClient.connect(url, (err, mongoClient) => {
+                if (err) {
+                    reject(err);
+                    return;
+                }
 
-        const onConnect = () => {
-            this._mongoDb = mongoClient.db(db);
-            logger `INFO` `connected to mongo db`;
-        };
+                this._mongoClient = mongoClient;
+                this._mongoDb = mongoClient.db(db);
 
-        this._mongoClient.on('open', onConnect);
-        this._mongoClient.on('reconnect', onConnect);
-
-        this._mongoClient.connect().catch(err => {
-            console.error("ERROR CONNECT");
+                resolve();
+            });
         });
-
-        // try {
-        //     const mongoClient = await mongoConnect(url, {
-        //         // reconnectTries : 3,
-        //         // autoReconnect : true
-        //     });
-        //     console.log("GOT CLIENT");
-        //     this._mongoClient = mongoClient;
-        //     this._mongoDb = mongoClient.db(db);
-        // } catch (e) {
-        //     console.error('MONGO connect failed');
-        //     console.error(e);
-        //     // throw e;
-        // }
-
-        // return await new Promise((resolve, reject) => {
-        //     mongodb.MongoClient.connect(url, (err, mongoClient) => {
-        //         if (err) {
-        //             reject(err);
-        //             return;
-        //         }
-
-        //         this._mongoClient = mongoClient;
-        //         this._mongoDb = mongoClient.db(db);
-
-        //         resolve();
-        //     });
-        // });
     }
 
 
@@ -186,6 +158,19 @@ export default class MongoDB {
         username = mongoToString(username);
 
         return await this._findOneUser({username});
+    }
+
+    async insertUser({username, hashBuf}) {
+        username = mongoToString(username);
+        const hash = hashBuf.toString('base64');
+
+        await this._mongoDb
+            .collection('users')
+            .insertOne({
+                username,
+                hash
+            })
+        ;
     }
 
 

@@ -1,14 +1,14 @@
-import { LogSystem } from 'whistleblower';
-import jsonFormatter from './whistleblower-formatter-json';
-import toStringFormatter from './whistleblower-formatter-tostring';
-import coalesceTransformer from './whistleblower-transformer-coalesce';
-import seperateTransformer from './whistleblower-transformer-separate';
-import consoleWriter from './whistleblower-writer-console';
+import { LogSystem } from 'logawesome';
+import jsonFormatter from './logawesome-formatter-json';
+import toStringFormatter from './logawesome-formatter-tostring';
+import coalesceTransformer from './logawesome-transformer-coalesce';
+import seperateTransformer from './logawesome-transformer-separate';
+import consoleWriter from './logawesome-writer-console';
 import fsWriter, { 
     dateStreamSupplier as fsWriterDateStreamSupplier, 
     perRangeRotation as fsWriterPerRangeRotation, 
     timestampFormatFilename as fsWriterTimestampFormatFilename
-} from './whistleblower-writer-fs';
+} from './logawesome-writer-fs';
 import path from 'path';
 
 export const logSystem = new LogSystem();
