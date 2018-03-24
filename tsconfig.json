@@ -1,0 +1,10 @@
+{
+    "compilerOptions": {
+        "experimentalDecorators": true,
+        "allowJs": true
+    },
+    "exclude": [
+        "client/node_modules",
+        "server/node_modules"
+    ]
+}

@@ -1,0 +1,33 @@
+{
+  "name": "guestbook",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "babel -s -d ./build src",
+    "clean": "rm -rf build",
+    "start": "babel-node src/app.js",
+    "test": "testcafe"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-register": "^6.26.0",
+    "dotenv": "^5.0.1",
+    "http-proxy-middleware": "^0.18.0",
+    "targz": "^1.0.1",
+    "testcafe": "^0.18.6"
+  },
+  "dependencies": {
+    "express": "^4.16.2",
+    "moment": "^2.20.1",
+    "mongodb": "^3.0.2",
+    "node-fetch": "^2.0.0",
+    "uuid": "^3.2.1"
+  }
+}

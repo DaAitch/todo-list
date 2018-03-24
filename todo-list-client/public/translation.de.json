@@ -1,0 +1,20 @@
+{
+    "locale": "de",
+    "ErrorCode": {
+        "LOGIN_FAILED": "Login fehlgeschlagen"
+    },
+    "NavBar": {
+        "HEADER": "Todo-List"
+    },
+    "Login": {
+        "HEADER": "Login",
+        "FORM_FIELD_USERNAME": "Benutzername",
+        "FORM_FIELD_PASSWORD": "Passwort"
+    },
+    "TodoListItem": {
+        "BUTTON_EDIT": "Bearbeiten",
+        "BUTTON_DELETE": "Löschen",
+        "BUTTON_SAVE": "Speichern",
+        "BUTTON_CANCEL": "Abbrechen"
+    }
+}
