@@ -1,5 +1,6 @@
 import crypto from 'crypto';
 import util from 'util';
+import {asString} from './cast';
 
 const randomBytes = util.promisify(crypto.randomBytes);
 const pbkdf2 = util.promisify(crypto.pbkdf2);
@@ -26,23 +27,6 @@ export const generateHashInfo = async () => {
     };
 };
 
-export const compareHash = async (secret, hashBuf) => {
-    const hashInfo = unpack(hashBuf);
-    const hash = await hashAlg(secret, hashInfo);
-
-    return hashInfo.hash.equals(hash);
-};
-
-export const createHashBuf = async (secret) => {
-    const hashInfo = await generateHashInfo();
-    const hash = await hashAlg(secret, hashInfo);
-
-    return pack({
-        ...hashInfo,
-        hash
-    });
-};
-
 export const hashAlg = async (secret, {salt, iterations, keylen, digest}) => {
     const hash = await pbkdf2(secret, salt, iterations, keylen, digest.toString());
     return hash;
@@ -50,17 +34,19 @@ export const hashAlg = async (secret, {salt, iterations, keylen, digest}) => {
 
 export const pack = ({salt, iterations, keylen, digest, hash}) => {
     const buf = new Buffer(
-        4 + // salt length
-        salt.length + 
-        4 + // iterations
-        4 + // keylen
-        4 + // digest length
-        digest.length +
-        4 + // hash length
-        hash.length
+        4 // salt length
+        + salt.length
+        + 4 // iterations
+        + 4 // keylen
+        + 4 // digest length
+        + digest.length
+        + 4 // hash length
+        + hash.length
     );
 
+    // eslint-disable-next-line no-unused-vars
     let i = 0;
+
     i = buf.writeUInt32BE(salt.length, i, true);
     i += salt.copy(buf, i);
     i = buf.writeUInt32BE(iterations, i, true);
@@ -110,4 +96,59 @@ export const unpack = buf => {
         digest,
         hash
     };
+};
+
+export const compareHash = async (secret, hashBuf) => {
+    let hashInfo;
+    try {
+        hashInfo = unpack(hashBuf);
+    } catch (e) {
+        return false;
+    }
+
+    const hash = await hashAlg(secret, hashInfo);
+
+    return hashInfo.hash.equals(hash);
+};
+
+export const createHashBuf = async secret => {
+    const hashInfo = await generateHashInfo();
+    const hash = await hashAlg(secret, hashInfo);
+
+    return pack({
+        ...hashInfo,
+        hash
+    });
+};
+
+
+export const createAuthenticator = db => handler => async (req, resp) => {
+    const session = await db.findSessionByAuthToken(req.headers.authorization);
+        
+    if (!session) {
+        resp.json(fail.auth());
+        return;
+    }
+
+    const user = await db.findUserById(session.userId);
+    if (!user) {
+        const sessionId = asString(session._id);
+        const userId = asString(session.userId);
+        req.logger `ERROR` `illegal db state, has session ${{sessionId}} with user id ${{userId}}, but no corresponding user with id ${{userId}}`;
+        resp.json(fail.auth());
+        return;
+    }
+
+    const userId = asString(user._id);
+    req.logger.set({userId});
+    req.logger `INFO` `authorized user`;
+
+    const handlerParams = {
+        req,
+        resp,
+        user,
+        session
+    };
+    
+    return handler(handlerParams);
 };

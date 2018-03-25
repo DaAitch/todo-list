@@ -15,7 +15,7 @@ export const perRangeRotation = millis => {
 export const timestampFormatFilename = momentJsFormat => {
     return logTimestamp => {
         const m = moment(logTimestamp);
-        return m.format(momentJsFormat)
+        return m.format(momentJsFormat);
     };
 };
 

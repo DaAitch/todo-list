@@ -1,5 +1,5 @@
 
-const JOINTPL_UNKNOWN_TYPE_MESSAGE = what => `unknown type, expect string or template array: ${typeof what} = ${JSON.stringify(what)}`;
+const joinTemplateUnknownTypeMessage = what => `unknown type, expect string or template array: ${typeof what} = ${JSON.stringify(what)}`;
 
 const placeholderToString = placeholder => {
     if (Array.isArray(placeholder)) {
@@ -41,17 +41,17 @@ const joinTpl = stringOrTpl => {
         || !Array.isArray(stringOrTpl[1])
         || stringOrTpl[0].length !== stringOrTpl[1].length + 1
     ) {
-        throw new TypeError(JOINTPL_UNKNOWN_TYPE_MESSAGE(stringOrTpl));
+        throw new TypeError(joinTemplateUnknownTypeMessage(stringOrTpl));
     }
 
     let result = stringOrTpl[0][0];
 
     for (let i = 0; i < stringOrTpl[1].length; ++i) {
-        result += placeholderToString(stringOrTpl[1][i]) + stringOrTpl[0][i+1];
+        result += placeholderToString(stringOrTpl[1][i]) + stringOrTpl[0][i + 1];
     }
 
     return result;
-}
+};
 
 export default writeFn => (
     logTimestamp,
@@ -69,4 +69,4 @@ export default writeFn => (
         logMessage,
         context
     });
-}
+};

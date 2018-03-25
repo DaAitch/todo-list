@@ -1,25 +1,30 @@
 {
-  "name": "guestbook",
+  "name": "todo-list-server",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "build": "babel -s -d ./build src",
     "clean": "rm -rf build",
-    "start": "babel-node src/app.js",
-    "test": "testcafe"
+    "start": "babel-node src/index.js",
+    "start:debug": "nodemon -w src --exec 'babel-node src/index.js --inspect=9229'",
+    "test": "testcafe",
+    "lint": "eslint ."
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "babel-cli": "^6.26.0",
+    "babel-eslint": "^8.2.2",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-polyfill": "^6.26.0",
     "babel-preset-env": "^1.6.1",
     "babel-register": "^6.26.0",
     "dotenv": "^5.0.1",
+    "eslint": "^4.19.1",
     "http-proxy-middleware": "^0.18.0",
+    "nodemon": "^1.17.2",
     "targz": "^1.0.1",
     "testcafe": "^0.18.6"
   },

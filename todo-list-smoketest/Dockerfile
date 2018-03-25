@@ -28,4 +28,4 @@ ENV TODOLIST_SSL_KEY=/usr/src/app/ssl/key.pem
 ENV TODOLIST_SSL_PASSPHRASE=todo
 
 EXPOSE 8080
-ENTRYPOINT [ "node", "server/src/app.js" ]
+ENTRYPOINT [ "node", "server/src/index.js" ]

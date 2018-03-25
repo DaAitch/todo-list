@@ -1,42 +1,18 @@
 import mongodb from 'mongodb';
-import { logSystem } from './log-system';
-
-const logger = logSystem.createLogger();
-logger.set('coId', 'MongoDB');
-
-export const mongoToString = any => {
-    if (any instanceof mongodb.ObjectId) {
-        return any.toHexString();
-    }
-
-    return '' + any;
-};
-
-export const mongoToObjectId = any => {
-    if (any instanceof mongodb.ObjectId) {
-        return any;
-    }
-
-    any = mongoToString(any);
-    return mongodb.ObjectId.createFromHexString(any);
-};
-
-export const mongoToNumber = any => +any || 0;
-
-export const mongoToBoolean = any => !!any;
+import {asString, asNumber, asBoolean, asObjectId} from './cast';
 
 export default class MongoDB {
 
-    constructor() {
+    constructor () {
         this._mongoClient = null;
         this._mongoDb = null;
     }
 
-    get connected() {
-        return this._mongoClient && this._mongoClient.isConnected()
+    get connected () {
+        return this._mongoClient && this._mongoClient.isConnected();
     }
 
-    async connect(url, db) {
+    async connect (url, db) {
         return await new Promise((resolve, reject) => {
             mongodb.MongoClient.connect(url, (err, mongoClient) => {
                 if (err) {
@@ -52,11 +28,7 @@ export default class MongoDB {
         });
     }
 
-
-
-
-
-    async _findOne(collection, by) {
+    async _findOne (collection, by) {
         const documents = await this._mongoDb
             .collection(collection)
             .find(by)
@@ -71,7 +43,7 @@ export default class MongoDB {
         return documents[0];
     }
 
-    async _find(collection, by) {
+    async _find (collection, by) {
         return await this._mongoDb
             .collection(collection)
             .find(by)
@@ -80,9 +52,7 @@ export default class MongoDB {
     }
 
 
-
-
-    async _deleteOne(collection, by) {
+    async _deleteOne (collection, by) {
         const opResult = await this._mongoDb
             .collection(collection)
             .deleteOne(by)
@@ -92,44 +62,36 @@ export default class MongoDB {
     }
 
 
-
-
-
-    async _findOneSession(by) {
+    async _findOneSession (by) {
         return await this._findOne('sessions', by);
     }
 
-    async _findOneUser(by) {
+    async _findOneUser (by) {
         return await this._findOne('users', by);
     }
 
-    async _findOneTodo(by) {
+    async _findOneTodo (by) {
         return await this._findOne('todos', by);
     }
 
-    async _findTodos(by) {
+    async _findTodos (by) {
         return await this._find('todos', by);
     }
 
-    async _deleteOneTodo(by) {
+    async _deleteOneTodo (by) {
         return await this._deleteOne('todos', by);
     }
 
 
-
-
-
-
-
-    async findSessionByAuthToken(authToken) {
-        authToken = mongoToString(authToken);
+    async findSessionByAuthToken (authToken) {
+        authToken = asString(authToken);
 
         return await this._findOneSession({authToken});
     }
 
-    async insertSession(userId, authToken) {
-        userId = mongoToObjectId(userId);
-        authToken = mongoToString(authToken);
+    async insertSession (userId, authToken) {
+        userId = asObjectId(userId);
+        authToken = asString(authToken);
         const version = 1;
 
         await this._mongoDb
@@ -142,26 +104,29 @@ export default class MongoDB {
         ;
     }
 
+    async deleteSession (authToken) {
+        authToken = asString(authToken);
+
+        await this._deleteOne('sessions', {
+            authToken
+        });
+    }
 
 
-
-
-
-
-    async findUserById(userId) {
-        userId = mongoToObjectId(userId);
+    async findUserById (userId) {
+        userId = asObjectId(userId);
 
         return await this._findOneUser({_id: userId});
     }
 
-    async findUserByUsername(username) {
-        username = mongoToString(username);
+    async findUserByUsername (username) {
+        username = asString(username);
 
         return await this._findOneUser({username});
     }
 
-    async insertUser({username, hashBuf}) {
-        username = mongoToString(username);
+    async insertUser ({username, hashBuf}) {
+        username = asString(username);
         const hash = hashBuf.toString('base64');
 
         await this._mongoDb
@@ -174,28 +139,25 @@ export default class MongoDB {
     }
 
 
-
-
-
-    async findTodosByUserId(userId) {
-        userId = mongoToString(userId);
+    async findTodosByUserId (userId) {
+        userId = asString(userId);
 
         return await this._findTodos({
             owner: userId
         });
     }
 
-    async findTodoById(todoId) {
-        todoId = mongoToObjectId(todoId);
+    async findTodoById (todoId) {
+        todoId = asObjectId(todoId);
 
         return await this._findOneTodo({
             _id: todoId
         });
     }
 
-    async deleteTodoById(todoId, version) {
-        todoId = mongoToObjectId(todoId);
-        version = mongoToNumber(version);
+    async deleteTodoById (todoId, version) {
+        todoId = asObjectId(todoId);
+        version = asNumber(version);
 
         return await this._deleteOneTodo({
             _id: todoId,
@@ -203,15 +165,15 @@ export default class MongoDB {
         });
     }
 
-    async insertTodo({
+    async insertTodo ({
         owner,
         description,
         done
     }) {
 
-        owner = mongoToString(owner);
-        description = mongoToString(description);
-        done = mongoToBoolean(done);
+        owner = asString(owner);
+        description = asString(description);
+        done = asBoolean(done);
         const version = 1;
 
         const opResult = await this._mongoDb
@@ -227,14 +189,14 @@ export default class MongoDB {
         return opResult && opResult.insertedId;
     }
 
-    async updateTodoById(todoId, version, {
+    async updateTodoById (todoId, version, {
         description,
         done
     }) {
-        todoId = mongoToObjectId(todoId);
-        description = mongoToString(description);
-        done = mongoToBoolean(done);
-        version = mongoToNumber(version);
+        todoId = asObjectId(todoId);
+        description = asString(description);
+        done = asBoolean(done);
+        version = asNumber(version);
 
         const opResult = await this._mongoDb
             .collection('todos')
