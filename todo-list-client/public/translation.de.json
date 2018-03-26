@@ -4,12 +4,14 @@
         "LOGIN_FAILED": "Login fehlgeschlagen"
     },
     "NavBar": {
-        "HEADER": "Todo-List"
+        "HEADER": "Todo-List",
+        "LOGOUT": "Ausloggen"
     },
     "Login": {
         "HEADER": "Login",
         "FORM_FIELD_USERNAME": "Benutzername",
-        "FORM_FIELD_PASSWORD": "Passwort"
+        "FORM_FIELD_PASSWORD": "Passwort",
+        "FORM_SUBMIT_LOGIN": "Einloggen"
     },
     "TodoListItem": {
         "BUTTON_EDIT": "Bearbeiten",

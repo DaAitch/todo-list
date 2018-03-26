@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { actions } from './reducers';
 import ErrorCode from './ErrorCode';
 import { fetchBackend } from './rest';
+import FontAwesome from 'react-fontawesome';
 
 @translate('Login')
 @connect(
@@ -71,7 +72,14 @@ export default class Login extends React.Component {
                             <input ref={ref => this._password = ref} type="password" name="password" id="formFieldPassword" className="form-control" />
                         </div>
                         <div className="form-group">
-                            <button type="submit" onClick={this.clickLogin}>Login</button>
+                            <button
+                                onClick={this.clickLogin}
+                                type="submit"
+                                class="btn btn-primary"
+                            >
+                                <FontAwesome name="sign-in" />
+                                {this.props.t('FORM_SUBMIT_LOGIN')}
+                            </button>
                         </div>
                     </div>
                 </div>

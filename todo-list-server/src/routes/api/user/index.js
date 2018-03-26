@@ -1,12 +1,13 @@
 import {createAuthenticator, createHashBuf} from '../../../security';
-import {success} from '../../../rest';
+import {success, fail} from '../../../rest';
+import {allowed} from '../../../rights';
 
 export default ({app, db}) => {
     const authenticated = createAuthenticator(db);
 
     app.post('/api/user', authenticated(async ({req, resp, user}) => {
 
-        if (!rights.allowed.addUser(user)) {
+        if (!allowed.addUser(user)) {
             resp.json(fail.accessViolation());
             return;
         }

@@ -1,6 +1,7 @@
 import crypto from 'crypto';
 import util from 'util';
 import {asString} from './cast';
+import {fail} from './rest';
 
 const randomBytes = util.promisify(crypto.randomBytes);
 const pbkdf2 = util.promisify(crypto.pbkdf2);

@@ -29,7 +29,7 @@ export const dateStreamSupplier = ({
 
     return (lastLogEntry, logEntry, streamFn) => {
         if (rotation(lastLogEntry, logEntry)) {
-            if (streamPromise) {
+            if (stream) {
                 stream.close();
                 stream = null;
             }

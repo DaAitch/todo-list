@@ -1,5 +1,5 @@
 const joinTemplateUnknownTypeMessage = what => `unknown type, expect string or template array: ${typeof what} = ${JSON.stringify(what)}`;
-const joinTemplateUnknownPlaceholder = what => `unknown placeholder type: ${typeof what} = ${JSON.stringify(stringOrTpl)}`;
+const joinTemplateUnknownPlaceholder = what => `unknown placeholder type: ${typeof what} = ${JSON.stringify(what)}`;
 
 const joinSeparatContextTpl = stringOrTpl => {
     if (typeof stringOrTpl === 'string') {
