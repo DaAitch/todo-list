@@ -1,8 +1,9 @@
+import cluster from 'cluster';
+
 import express from 'express';
 
 import logawesomeMiddleware from './logging/logawesome-express-middleware';
 import MongoDB from './MongoDB';
-import {createLogger} from './log';
 import {createServer} from './server';
 
 import routesApiSystemStatus from './routes/api/system/status';
@@ -16,12 +17,11 @@ import {createDocumentProxy, createDocumentStaticProvider} from './routes/client
 import {exitCodes} from './exit';
 
 
-export const runApp = async () => {
+export const runApp = async logger => {
 
     // logging
-
-    const logger = createLogger('main');
     logger `INFO` `starting todo list`;
+
 
     // database
     const db = new MongoDB();

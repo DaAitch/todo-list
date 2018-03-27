@@ -2,6 +2,18 @@
 const joinTemplateUnknownTypeMessage = what => `unknown type, expect string or template array: ${typeof what} = ${JSON.stringify(what)}`;
 
 const placeholderToString = placeholder => {
+    if (placeholder === null) {
+        return '<null>';
+    }
+
+    if (placeholder === undefined) {
+        return '<undefined>';
+    }
+
+    if (placeholder instanceof Error) {
+        return placeholder.stack || (placeholder.toString && placeholder.toString());
+    }
+
     if (Array.isArray(placeholder)) {
         if (placeholder.length === 0) {
             return '[]';

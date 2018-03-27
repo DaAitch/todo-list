@@ -8,7 +8,7 @@
     "clean": "rm -rf build",
     "start": "babel-node src/index.js",
     "start:debug": "nodemon -w src --exec 'babel-node src/index.js --inspect=9229'",
-    "start:production": "NODE_ENV=production node build/index.js",
+    "start:production": "$npm_execpath run build && NODE_ENV=production $npm_node_execpath build/index.js",
     "test": "testcafe",
     "lint": "eslint ."
   },
