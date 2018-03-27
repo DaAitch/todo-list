@@ -4,7 +4,11 @@
         "allowJs": true
     },
     "exclude": [
-        "client/node_modules",
-        "server/node_modules"
+        "todo-list-client/node_modules",
+        "todo-list-client/node_modules/build",
+
+        "todo-list-server/node_modules",
+        "todo-list-server/node_modules/build",
+        "todo-list-server/node_modules/build-source"
     ]
 }
