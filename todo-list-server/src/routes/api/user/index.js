@@ -5,15 +5,15 @@ import {allowed} from '../../../rights';
 export default ({app, db}) => {
     const authenticated = createAuthenticator(db);
 
-    app.post('/api/user', authenticated(async ({req, resp, user}) => {
+    app.post('/api/user', authenticated, async (req, res) => {
 
-        if (!allowed.addUser(user)) {
-            resp.json(fail.accessViolation());
+        if (!allowed.addUser(req.authenticated.user)) {
+            res.json(fail.accessViolation());
             return;
         }
 
         if (!req.body || !req.body.username || !req.body.password) {
-            resp.json(fail.badRequest());
+            res.json(fail.badRequest());
             return;
         }
 
@@ -27,6 +27,6 @@ export default ({app, db}) => {
             hashBuf
         });
 
-        resp.json(success());
-    }));
+        res.json(success());
+    });
 };

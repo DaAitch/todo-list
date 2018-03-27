@@ -13,7 +13,6 @@ import fsWriter, {
 } from './logging/logawesome-writer-fs';
 
 export const logSystem = new LogSystem();
-logSystem.addAppender(coalesceTransformer(consoleWriter({formatter: toStringFormatter('HH:mm:ss.SSS')})));
 logSystem.addAppender(seperateTransformer(fsWriter({
     streamSupplier: fsWriterDateStreamSupplier({
         path: path.join(__dirname, '../logs'),
@@ -22,6 +21,10 @@ logSystem.addAppender(seperateTransformer(fsWriter({
     }),
     formatter: jsonFormatter
 })));
+
+if (process.env.NODE_ENV !== 'production') {
+    logSystem.addAppender(coalesceTransformer(consoleWriter({formatter: toStringFormatter('HH:mm:ss.SSS')})));
+}
 
 
 // correlation id name

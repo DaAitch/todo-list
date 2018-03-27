@@ -18,6 +18,7 @@ COPY ./lib/key.pem ./ssl/key.pem
 
 RUN mkdir /usr/src/app/server/logs
 
+ENV NODE_ENV=production
 ENV TODOLIST_MONGO_URL=mongodb://mongo:27017
 ENV TODOLIST_MONGO_DB=todolist
 ENV TODOLIST_DOCUMENT_DIR=/usr/src/app/client

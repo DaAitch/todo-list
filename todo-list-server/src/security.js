@@ -123,11 +123,12 @@ export const createHashBuf = async secret => {
 };
 
 
-export const createAuthenticator = db => handler => async (req, resp) => {
+export const createAuthenticator = db => async (req, res, next) => {
+
     const session = await db.findSessionByAuthToken(req.headers.authorization);
         
     if (!session) {
-        resp.json(fail.auth());
+        res.json(fail.auth());
         return;
     }
 
@@ -136,7 +137,7 @@ export const createAuthenticator = db => handler => async (req, resp) => {
         const sessionId = asString(session._id);
         const userId = asString(session.userId);
         req.logger `ERROR` `illegal db state, has session ${{sessionId}} with user id ${{userId}}, but no corresponding user with id ${{userId}}`;
-        resp.json(fail.auth());
+        res.json(fail.auth());
         return;
     }
 
@@ -144,12 +145,10 @@ export const createAuthenticator = db => handler => async (req, resp) => {
     req.logger.set({userId});
     req.logger `INFO` `authorized user`;
 
-    const handlerParams = {
-        req,
-        resp,
+    req.authenticated = {
         user,
         session
     };
     
-    return handler(handlerParams);
+    next();
 };

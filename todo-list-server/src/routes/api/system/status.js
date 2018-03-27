@@ -5,10 +5,10 @@ import {success} from '../../../rest';
 export default ({app, db}) => {
     const upSince = moment();
     
-    app.get('/api/system/status', async (req, resp) => {
+    app.get('/api/system/status', async (req, res) => {
     
         const now = moment();
-        resp.json(success({
+        res.json(success({
             sanity: db.connected,
             uptime: {
                 text: upSince.from(now),
